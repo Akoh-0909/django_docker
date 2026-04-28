@@ -31,6 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
+    '127.0.0.1',
     '15.164.247.106',
 ]
 
@@ -80,16 +81,24 @@ WSGI_APPLICATION = 'django_docker.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'rdsdb',
-        'USER': 'django',
-        'PASSWORD': os.getenv('LOCAL_RDSDB_PASSWORD'),
-        'HOST': 'localhost',
-        'PORT': '3306',
+if os.getenv('DJANGO_ENV') == 'production':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'rdsdb',
+            'USER': 'django',
+            'PASSWORD': os.getenv('LOCAL_RDSDB_PASSWORD'),
+            'HOST': 'django-post.cbesaym4o1mp.ap-northeast-2.rds.amazonaws.com',
+            'PORT': '3306',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
